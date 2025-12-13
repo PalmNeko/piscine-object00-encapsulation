@@ -12,14 +12,14 @@ namespace Tookuyam
 
     class Bank
     {
+    public:
+        static const double inflowRate;
+
+    private:
         int liquidity;
         std::map<int, Account *> clientAccounts;
         int nextId;
         bool transaction_lock;
-
-        Bank(const Bank &other);
-        Bank &operator=(const Bank &other);
-        friend std::ostream &operator<<(std::ostream &p_os, const Bank &p_bank);
 
     public:
         Bank();
@@ -31,6 +31,14 @@ namespace Tookuyam
         int getNextId() const;
         ETransferMessage withdraw(Account &account, int value);
         ETransferMessage deposit(Account &account, int value);
+        ETransferMessage loan(Account &account, int value);
+        ETransferMessage repay(Account &account, int value);
+
+    private:
+        Bank(const Bank &other);
+        Bank &operator=(const Bank &other);
+
+        friend std::ostream &operator<<(std::ostream &p_os, const Bank &p_bank);
     };
     std::ostream &operator<<(std::ostream &p_os, const Bank &p_bank);
 }

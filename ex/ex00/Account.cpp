@@ -3,15 +3,15 @@
 
 namespace Tookuyam
 {
-    Account::Account() : id(-1), value(0), transaction_lock(false)
+    Account::Account() : id(-1), value(0), debt(0), transaction_lock(false)
     {
     }
 
-    Account::Account(int id) : id(id), value(0), transaction_lock(false)
+    Account::Account(int id) : id(id), value(0), debt(0), transaction_lock(false)
     {
     }
 
-    Account::Account(const Account &other) : id(other.id), value(other.value), transaction_lock(false)
+    Account::Account(const Account &other) : id(other.id), value(other.value), debt(other.debt), transaction_lock(false)
     {
     }
 
@@ -44,6 +44,11 @@ namespace Tookuyam
         return value;
     }
 
+    int Account::getDebt() const
+    {
+        return debt;
+    }
+
     ETransferMessage Account::withdraw(Bank &bank, int value)
     {
         if (transaction_lock)
@@ -71,14 +76,47 @@ namespace Tookuyam
             transaction_lock = false;
             return NG;
         }
-        this->value += value;
+        this->value += value - (value * Bank::inflowRate);
         transaction_lock = false;
         return OK;
     }
+
+    ETransferMessage Account::loan(Bank &bank, int value)
+    {
+        if (transaction_lock)
+            return OK;
+        transaction_lock = true;
+        if (bank.loan(*this, value) == NG)
+        {
+            transaction_lock = false;
+            return NG;
+        }
+        this->debt += value;
+        transaction_lock = false;
+        return OK;
+    }
+
+    ETransferMessage Account::repay(Bank &bank, int value)
+    {
+        if (transaction_lock)
+            return OK;
+        if (debt < value)
+            return NG;
+        transaction_lock = true;
+        if (bank.repay(*this, value) == NG)
+        {
+            transaction_lock = false;
+            return NG;
+        }
+        this->debt -= value;
+        transaction_lock = false;
+        return OK;
+    }
+
 }
 
 std::ostream &Tookuyam::operator<<(std::ostream &p_os, const Account &p_account)
 {
-    p_os << "[" << p_account.getId() << "] - [" << p_account.getValue() << "]";
+    p_os << "[" << p_account.getId() << "] - [" << p_account.getValue() << "] debt: [" << p_account.getDebt() << "]";
     return (p_os);
 }

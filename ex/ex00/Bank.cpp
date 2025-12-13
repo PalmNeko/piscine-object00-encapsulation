@@ -3,6 +3,8 @@
 
 namespace Tookuyam
 {
+    const double Bank::inflowRate = 0.05;
+
     Bank::Bank() : liquidity(0), nextId(0), transaction_lock(false)
     {
     }
@@ -86,6 +88,38 @@ namespace Tookuyam
             return OK;
         transaction_lock = true;
         if (account.deposit(*this, value) == NG)
+        {
+            transaction_lock = false;
+            return NG;
+        }
+        this->liquidity += value + (value * Bank::inflowRate);
+        transaction_lock = false;
+        return OK;
+    }
+
+    ETransferMessage Bank::loan(Account &account, int value)
+    {
+        if (transaction_lock)
+            return OK;
+        if (this->liquidity < value)
+            return NG;
+        transaction_lock = true;
+        if (account.loan(*this, value) == NG)
+        {
+            transaction_lock = false;
+            return NG;
+        }
+        this->liquidity -= value;
+        transaction_lock = false;
+        return OK;
+    }
+
+    ETransferMessage Bank::repay(Account &account, int value)
+    {
+        if (transaction_lock)
+            return OK;
+        transaction_lock = true;
+        if (account.repay(*this, value) == NG)
         {
             transaction_lock = false;
             return NG;

@@ -11,17 +11,29 @@ int main()
     Tookuyam::Account &_0 = bank.createAccount();
     Tookuyam::Account &_1 = bank.createAccount();
 
-    print_message(bank, "初期状態");
+    print_message(bank, "初期状態 (5%)");
 
     _0.deposit(bank, 100);
     _1.deposit(bank, 100);
-    print_message(bank, "入金後");
+    print_message(bank, "入金後 0: 100, 1: 100");
 
     _0.withdraw(bank, 300);
     print_message(bank, "引き出し失敗");
 
-    _0.withdraw(bank, 100);
-    print_message(bank, "引き出し成功");
+    _0.withdraw(bank, 95);
+    print_message(bank, "引き出し成功 0: 95");
+
+    _0.loan(bank, 115);
+    print_message(bank, "融資後 0: 115");
+
+    _0.loan(bank, 10);
+    print_message(bank, "融資できず");
+
+    _0.repay(bank, 115);
+    print_message(bank, "返済後 0: 115");
+
+    _0.repay(bank, 10);
+    print_message(bank, "返済できず");
 
     return (0);
 }
