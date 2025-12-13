@@ -30,7 +30,7 @@ namespace Tookuyam
         return *this;
     }
 
-    const Account &Bank::getAccount(int id) const
+    Account &Bank::getAccount(int id) const
     {
         std::map<int, Tookuyam::Account *>::const_iterator it = clientAccounts.find(id);
         if (it == clientAccounts.end())

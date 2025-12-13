@@ -35,6 +35,15 @@ int main()
     _0.repay(bank, 10);
     print_message(bank, "返済できず");
 
+    bank.deleteAccount(0);
+    print_message(bank, "アカウント削除 0");
+
+    bank.deleteAccount(2);
+    print_message(bank, "アカウント削除できず");
+
+    bank.createAccount();
+    print_message(bank, "空き番ありのアカウント追加");
+
     return (0);
 }
 
