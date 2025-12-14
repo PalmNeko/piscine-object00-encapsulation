@@ -1,10 +1,7 @@
 #pragma once
 
-namespace Tookuyam
+enum ETransferMessage
 {
-    enum ETransferMessage
-    {
-        OK,
-        NG
-    };
-}
+    OK,
+    NG
+};

@@ -1,121 +1,53 @@
 
 #include "Account.hpp"
 
-namespace Tookuyam
+Bank::Account::Account() : id(-1), value(0), debt(0), transaction_lock(false)
 {
-    Account::Account() : id(-1), value(0), debt(0), transaction_lock(false)
-    {
-    }
-
-    Account::Account(int id) : id(id), value(0), debt(0), transaction_lock(false)
-    {
-    }
-
-    Account::Account(const Account &other) : id(other.id), value(other.value), debt(other.debt), transaction_lock(false)
-    {
-    }
-
-    Account::~Account()
-    {
-    }
-
-    Account &Account::operator=(const Account &)
-    {
-        return *this;
-    }
-
-    Account *Account::createAccount(Bank &bank)
-    {
-        return new Account(bank.getNextId());
-    }
-
-    bool Account::isEqual(int id) const
-    {
-        return id == this->id;
-    }
-
-    int Account::getId() const
-    {
-        return id;
-    }
-
-    int Account::getValue() const
-    {
-        return value;
-    }
-
-    int Account::getDebt() const
-    {
-        return debt;
-    }
-
-    ETransferMessage Account::withdraw(Bank &bank, int value)
-    {
-        if (transaction_lock)
-            return OK;
-        if (this->value < value)
-            return NG;
-        transaction_lock = true;
-        if (bank.withdraw(*this, value) == NG)
-        {
-            transaction_lock = false;
-            return NG;
-        }
-        this->value -= value;
-        transaction_lock = false;
-        return OK;
-    }
-
-    ETransferMessage Account::deposit(Bank &bank, int value)
-    {
-        if (transaction_lock)
-            return OK;
-        transaction_lock = true;
-        if (bank.deposit(*this, value) == NG)
-        {
-            transaction_lock = false;
-            return NG;
-        }
-        this->value += value - (value * Bank::inflowRate);
-        transaction_lock = false;
-        return OK;
-    }
-
-    ETransferMessage Account::loan(Bank &bank, int value)
-    {
-        if (transaction_lock)
-            return OK;
-        transaction_lock = true;
-        if (bank.loan(*this, value) == NG)
-        {
-            transaction_lock = false;
-            return NG;
-        }
-        this->debt += value;
-        transaction_lock = false;
-        return OK;
-    }
-
-    ETransferMessage Account::repay(Bank &bank, int value)
-    {
-        if (transaction_lock)
-            return OK;
-        if (debt < value)
-            return NG;
-        transaction_lock = true;
-        if (bank.repay(*this, value) == NG)
-        {
-            transaction_lock = false;
-            return NG;
-        }
-        this->debt -= value;
-        transaction_lock = false;
-        return OK;
-    }
-
 }
 
-std::ostream &Tookuyam::operator<<(std::ostream &p_os, const Account &p_account)
+Bank::Account::Account(id_t id) : id(id), value(0), debt(0), transaction_lock(false)
+{
+}
+
+Bank::Account::Account(const Account &other) : id(other.id), value(other.value), debt(other.debt), transaction_lock(false)
+{
+}
+
+Bank::Account::~Account()
+{
+}
+
+Bank::Account &Bank::Account::operator=(const Account &)
+{
+    return *this;
+}
+
+bool Bank::Account::canPay(Bank::money_t value) const
+{
+    return value <= this->value;
+}
+
+bool Bank::Account::canRepay(Bank::money_t value) const
+{
+    return value <= this->debt;
+}
+
+Bank::id_t Bank::Account::getId() const
+{
+    return id;
+}
+
+Bank::money_t Bank::Account::getValue() const
+{
+    return value;
+}
+
+Bank::money_t Bank::Account::getDebt() const
+{
+    return debt;
+}
+
+std::ostream &operator<<(std::ostream &p_os, const Bank::Account &p_account)
 {
     p_os << "[" << p_account.getId() << "] - [" << p_account.getValue() << "] debt: [" << p_account.getDebt() << "]";
     return (p_os);

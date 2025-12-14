@@ -5,34 +5,30 @@
 #include "Bank.hpp"
 #include "ETransferMessage.hpp"
 
-namespace Tookuyam
+class Bank::Account
 {
-    class Bank;
+    id_t id;
+    money_t value;
+    money_t debt;
+    bool transaction_lock;
 
-    class Account
-    {
-        int id;
-        int value;
-        int debt;
-        bool transaction_lock;
+    friend ETransferMessage Bank::withdraw(id_t id, money_t value);
+    friend ETransferMessage Bank::deposit(id_t id, money_t value);
+    friend ETransferMessage Bank::loan(id_t id, money_t value);
+    friend ETransferMessage Bank::repay(id_t id, money_t value);
+    friend const Account &Bank::createAccount();
 
-        Account();
-        Account(int id);
-        Account(const Account &other);
-        Account &operator=(const Account &other);
+    Account();
+    Account(id_t id);
+    Account(const Account &other);
+    Account &operator=(const Account &other);
 
-    public:
-        ~Account();
-        static Account *createAccount(Bank &bank);
-        bool isEqual(int id) const;
-        int getId() const;
-        int getValue() const;
-        int getDebt() const;
-        ETransferMessage withdraw(Bank &bank, int value);
-        ETransferMessage deposit(Bank &bank, int value);
-        ETransferMessage loan(Bank &bank, int value);
-        ETransferMessage repay(Bank &bank, int value);
-    };
-
-    std::ostream &operator<<(std::ostream &p_os, const Account &p_account);
-}
+public:
+    ~Account();
+    bool canPay(money_t value) const;
+    bool canRepay(money_t value) const;
+    id_t getId() const;
+    money_t getValue() const;
+    money_t getDebt() const;
+};
+std::ostream &operator<<(std::ostream &p_os, const Bank::Account &p_account);
