@@ -64,10 +64,6 @@ void Graph::plotConsole(std::ostream &os) const
 
     if (it == ite)
         return;
-    int x_min = std::numeric_limits<int>::max();
-    int y_min = std::numeric_limits<int>::max();
-    int x_max = std::numeric_limits<int>::min();
-    int y_max = std::numeric_limits<int>::min();
 
     // make field
     do
@@ -75,27 +71,18 @@ void Graph::plotConsole(std::ostream &os) const
         const int x = clampInt(it->x());
         const int y = clampInt(it->y());
 
-        x_min = std::min(x_min, x);
-        y_min = std::min(y_min, y);
-        x_max = std::max(x_max, x);
-        y_max = std::max(y_max, y);
         field[y].insert(x);
     } while (++it != ite);
 
-    if (y_max < std::numeric_limits<int>::max())
-        y_max += 1;
-    if (x_max < std::numeric_limits<int>::max())
-        x_max += 1;
-
-    int x_digit_max = std::max(calcDigit(x_min), calcDigit(x_max)) + 1;
-    int y_digit_max = std::max(calcDigit(y_min), calcDigit(y_max)) + 1;
+    int x_digit_max = calcDigit(size_x) + 1;
+    int y_digit_max = calcDigit(size_y) + 1;
 
     std::map<int, std::set<int> >::reverse_iterator y_rit = field.rbegin();
     std::map<int, std::set<int> >::reverse_iterator y_rite = field.rend();
     std::set<int>::iterator x_rit = y_rit->second.end();
     std::set<int>::iterator x_rite = y_rit->second.end();
 
-    int y = y_max;
+    int y = size_y + 1;
     while (true)
     {
         os << ">&" << std::setw(y_digit_max) << y;
@@ -105,7 +92,7 @@ void Graph::plotConsole(std::ostream &os) const
             x_rite = y_rit->second.end();
             y_rit++;
         }
-        int x = x_min;
+        int x = 0;
         while (true)
         {
             if (x_rit != x_rite && *x_rit == x)
@@ -117,21 +104,21 @@ void Graph::plotConsole(std::ostream &os) const
             {
                 os << std::setw(x_digit_max) << ".";
             }
-            if (x >= x_max)
+            if (x >= size_x + 1)
                 break;
             x++;
         }
         os << "\n";
-        if (y <= y_min)
+        if (y <= 0)
             break;
         y--;
     }
     os << ">&" << std::setw(y_digit_max) << " ";
-    int x = x_min;
+    int x = 0;
     while (true)
     {
         os << std::setw(x_digit_max) << x;
-        if (x >= x_max)
+        if (x >= size_x + 1)
             break;
         x++;
     }
