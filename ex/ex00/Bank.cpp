@@ -49,7 +49,7 @@ void Bank::deleteAccount(id_t id)
 {
     Account &account = getAccount(id);
     delete &account;
-    clientAccounts.erase(account.getId());
+    clientAccounts.erase(id);
 }
 
 ETransferMessage Bank::withdraw(id_t id, money_t value)
