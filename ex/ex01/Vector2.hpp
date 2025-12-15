@@ -12,8 +12,9 @@ public:
     ~Vector2() {};
 
     Vector2 &operator=(const Vector2 &other);
-    bool operator<(const Vector2 &rhs) const { return _y < rhs._y || _x < rhs._x; }
+    bool operator<(const Vector2 &rhs) const;
 
     float x() const { return _x; }
     float y() const { return _y; }
 };
+std::ostream &operator<<(std::ostream &os, const Vector2 &rhs);

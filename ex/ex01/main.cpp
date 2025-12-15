@@ -18,11 +18,14 @@ int main()
 void plotBasicGraph()
 {
     std::cout << "サンプル グラフ" << std::endl;
-    Graph graph(5, 5);
+    Graph graph(Vector2(10, 10));
 
     graph.addPoint(Vector2(0, 0));
     graph.addPoint(Vector2(2, 2));
-    graph.addPoint(Vector2(4, 2));
+    graph.addPoint(Vector2(4, 2.2));
     graph.addPoint(Vector2(2, 4));
     graph.plotConsole(std::cout);
+    std::cout << std::endl;
+    graph.print(std::cout);
+    std::cout << graph.getPoint(Vector2(2, 4)) << std::endl;
 }

@@ -1,6 +1,7 @@
 #include <limits>
 #include <map>
 #include <set>
+#include <vector>
 #include <cmath>
 #include <iomanip>
 #include "Graph.hpp"
@@ -35,6 +36,10 @@ Graph &Graph::operator=(const Graph &other)
 
 void Graph::addPoint(const Vector2 &vec)
 {
+    if (vec.x() < 0 || vec.x() >= size.x())
+        throw std::runtime_error("Over the size");
+    if (vec.y() < 0 || vec.y() >= size.y())
+        throw std::runtime_error("Over the size");
     points.insert(vec);
 }
 
@@ -49,7 +54,7 @@ void Graph::print(std::ostream &os) const
         if (comma)
             os << ",";
         comma = true;
-        os << "[" << clampInt(it->x()) << "," << clampInt(it->y()) << "]";
+        os << "[" << it->x() << "," << it->y() << "]";
         it++;
     }
     os << std::endl;
@@ -57,70 +62,39 @@ void Graph::print(std::ostream &os) const
 
 void Graph::plotConsole(std::ostream &os) const
 {
-    std::map<int, std::set<int> > field;
+    std::vector<std::vector<char> > display(size.y(), std::vector<char>(size.x(), '.'));
 
+    if (display.size() == 0 || display[0].size() == 0)
+        return;
     points_t::const_iterator it = points.begin();
     points_t::const_iterator ite = points.end();
 
     if (it == ite)
         return;
-
-    // make field
-    do
+    while (it != ite)
     {
         const int x = clampInt(it->x());
         const int y = clampInt(it->y());
+        display[y][x] = 'X';
+        it++;
+    }
 
-        field[y].insert(x);
-    } while (++it != ite);
+    int x_digit_max = calcDigit(size.x()) + 1;
+    int y_digit_max = calcDigit(size.y()) + 1;
 
-    int x_digit_max = calcDigit(size_x) + 1;
-    int y_digit_max = calcDigit(size_y) + 1;
-
-    std::map<int, std::set<int> >::reverse_iterator y_rit = field.rbegin();
-    std::map<int, std::set<int> >::reverse_iterator y_rite = field.rend();
-    std::set<int>::iterator x_rit = y_rit->second.end();
-    std::set<int>::iterator x_rite = y_rit->second.end();
-
-    int y = size_y + 1;
-    while (true)
+    for (size_t yi = display.size(); yi > 0; yi--)
     {
+        size_t y = yi - 1;
         os << ">&" << std::setw(y_digit_max) << y;
-        if (y_rit != y_rite && y_rit->first == y)
-        {
-            x_rit = y_rit->second.begin();
-            x_rite = y_rit->second.end();
-            y_rit++;
-        }
-        int x = 0;
-        while (true)
-        {
-            if (x_rit != x_rite && *x_rit == x)
-            {
-                os << std::setw(x_digit_max) << "X";
-                x_rit++;
-            }
-            else
-            {
-                os << std::setw(x_digit_max) << ".";
-            }
-            if (x >= size_x + 1)
-                break;
-            x++;
-        }
+        for (size_t x = 0; x < display[y].size(); x++)
+            os << std::setw(x_digit_max) << display[y][x];
         os << "\n";
-        if (y <= 0)
-            break;
-        y--;
     }
     os << ">&" << std::setw(y_digit_max) << " ";
-    int x = 0;
-    while (true)
+    if (display.size() != 0)
     {
-        os << std::setw(x_digit_max) << x;
-        if (x >= size_x + 1)
-            break;
-        x++;
+        for (size_t x = 0; x < display[0].size(); x++)
+            os << std::setw(x_digit_max) << x;
     }
     os << std::endl;
     return;
