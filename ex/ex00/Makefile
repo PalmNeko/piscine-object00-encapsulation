@@ -33,6 +33,9 @@ show:
 	@printf "%s:\n\t%s\n" "NAME" "$(NAME)"
 	@printf "%s:\n\t%s\n" "SRC" "$(SRC)"
 
+valgrind: debug
+	valgrind --leak-check=full -q --show-leak-kinds=all ./$(NAME)
+
 -include $(DEPS)
 
 # file rules

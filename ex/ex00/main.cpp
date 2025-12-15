@@ -3,13 +3,14 @@
 #include "Bank.hpp"
 #include "Account.hpp"
 
-#define EXCEPTION_SAFETY(code) do { \
-    try code \
-    catch(const std::exception &e) \
-    { \
-        std::cerr << "\e[31m" << e.what() << "\e[m" << std::endl; \
-    } \
-} while(0)
+#define EXCEPTION_SAFETY(code)                                        \
+    do                                                                \
+    {                                                                 \
+        try code catch (const std::exception &e)                      \
+        {                                                             \
+            std::cerr << "\e[31m" << e.what() << "\e[m" << std::endl; \
+        }                                                             \
+    } while (0)
 
 void print_operate(const std::string &message);
 void print_message(const Bank &bank, const std::string &message);

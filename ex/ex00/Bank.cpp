@@ -48,6 +48,7 @@ const Bank::Account &Bank::createAccount()
 void Bank::deleteAccount(id_t id)
 {
     Account &account = getAccount(id);
+    delete &account;
     clientAccounts.erase(account.getId());
 }
 
@@ -102,7 +103,6 @@ const Bank::Account &Bank::operator[](id_t id) const
 {
     return getAccount(id);
 }
-
 
 std::ostream &operator<<(std::ostream &p_os, const Bank &p_bank)
 {

@@ -4,7 +4,7 @@
 
 namespace std
 {
-    template<>
+    template <>
     class numeric_limits<Money>
     {
     public:

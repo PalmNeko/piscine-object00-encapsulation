@@ -14,9 +14,8 @@ class Money
 
 public:
     Money() : value(0) {};
-    Money(money_t value) : value(value)
-    {
-    };
+    Money(money_t value) : value(value) {
+                           };
     ~Money() {};
 
     bool operator<(const Money &rhs) { return value < rhs.value; }
@@ -60,4 +59,4 @@ public:
 };
 std::ostream &operator<<(std::ostream &os, const Money &rhs);
 
-#include "MoneyLimits.hpp"
+#include "Money.tpp"
