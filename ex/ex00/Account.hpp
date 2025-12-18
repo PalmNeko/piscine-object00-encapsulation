@@ -23,10 +23,11 @@ class Bank::Account
     Account(const Account &other);
     Account &operator=(const Account &other);
 
-public:
-    ~Account();
     bool canPay(money_t value) const;
     bool canRepay(money_t value) const;
+
+public:
+    ~Account();
     id_t getId() const;
     money_t getValue() const;
     money_t getDebt() const;
