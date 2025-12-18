@@ -4,6 +4,7 @@
 #include <vector>
 #include <cmath>
 #include <iomanip>
+#include <math.h>
 #include "Graph.hpp"
 
 static int clampInt(float a)
@@ -36,6 +37,8 @@ Graph &Graph::operator=(const Graph &other)
 
 void Graph::addPoint(const Vector2 &vec)
 {
+    if (isfinite(vec.x()) == false || isfinite(vec.y()) == false)
+        throw std::runtime_error("Cant assign value");
     if (vec.x() < 0 || vec.x() >= size.x())
         throw std::runtime_error("Over the size");
     if (vec.y() < 0 || vec.y() >= size.y())
